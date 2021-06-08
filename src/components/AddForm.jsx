@@ -1,31 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { addPost } from "../redux/actions/postsActions";
+import { useDispatch, useSelector } from "react-redux";
+import { addPost, editPost } from "../redux/actions/postsActions";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const AddForm = ({ title = "", body = "" }) => {
-  const [formtitle, setFormtitle] = useState("");
-  const [formbody, setFormbody] = useState("");
+const AddForm = ({ history, match }) => {
+  const [formTitle, setFormtitle] = useState("");
+  const [formBody, setFormbody] = useState("");
 
+  const posts = useSelector((state) => state.posts);
+  const id = parseInt(match.params.postId);
+  useEffect(() => {
+    if (id) {
+      const details = posts.filter((post) => post.id === id)[0];
+      setFormtitle(details.title);
+      setFormbody(details.body);
+    }
+  }, []);
   const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(addPost({ formtitle, formbody }));
+
+    if (!id) {
+      dispatch(addPost({ formTitle, formBody }));
+    } else {
+      dispatch(editPost({ id, formTitle, formBody }));
+    }
+    history.push(`/`);
   };
 
   return (
     <div>
+      {id ? (
+        <h1 className="primary" style={{ margin: "20px 0 40px 0" }}>
+          Edit the Post!
+        </h1>
+      ) : (
+        <h1 className="primary" style={{ margin: "20px 0 40px 0" }}>
+          Create a new Post!
+        </h1>
+      )}
+
       <Container className="border border-success" style={{ maxWidth: 500 }}>
-        <h1>Create A New Post!</h1>
         <Form onSubmit={handleSubmit}>
           <Form.Group>
             <Form.Label>Title</Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter the Title of the Post"
-              defaultValue={title}
+              defaultValue={formTitle}
               onChange={(e) => setFormtitle(e.target.value)}
               required
             />
@@ -33,10 +57,10 @@ const AddForm = ({ title = "", body = "" }) => {
           <Form.Group>
             <Form.Label>Description</Form.Label>
             <Form.Control
-              type="textarea"
+              as="textarea"
               rows={4}
               placeholder="Surprise US!!!"
-              defaultValue={body}
+              defaultValue={formBody}
               onChange={(e) => setFormbody(e.target.value)}
               required
             />

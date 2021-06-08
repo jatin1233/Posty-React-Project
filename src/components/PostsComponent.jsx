@@ -5,17 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { deletePost } from "../redux/actions/postsActions";
 import { showPost } from "../redux/actions/postsActions";
 
-const PostsComponent = () => {
+const PostsComponent = (props) => {
   const postData = useSelector((state) => state.posts);
   console.log(postData);
   const dispatch = useDispatch();
 
   const deleteItem = (id) => {
     dispatch(deletePost(id));
-  };
-
-  const showItem = (id) => {
-    dispatch(showPost(id));
   };
 
   const renderPost = () => {
@@ -33,12 +29,16 @@ const PostsComponent = () => {
             <Button
               variant="primary"
               style={{ margin: "0px 10px 0px 0px" }}
-              onClick={() => showItem({ id })}
-              href="/post/${id}"
+              onClick={() => props.history.push(`/post/${id}`)}
             >
               Read More
             </Button>
-            <Button style={{ margin: "0px 10px 0px 0px" }}>Edit Post</Button>
+            <Button
+              style={{ margin: "0px 10px 0px 0px" }}
+              onClick={() => props.history.push(`/post/edit/${id}`)}
+            >
+              Edit Post
+            </Button>
             <Button variant="primary" onClick={() => deleteItem(id)}>
               Delete
             </Button>

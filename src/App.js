@@ -16,6 +16,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={PostsList} />
             <Route path="/post/add" exact component={AddForm} />
+            <Route path="/post/edit/:postId" exact component={AddForm} />
             <Route path="/post/:postId" exact component={Post} />
             <Route>404 Not Found!</Route>
           </Switch>

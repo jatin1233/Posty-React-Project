@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../redux/actions/postsActions";
 import PostsComponent from "./PostsComponent";
 
-const PostsList = () => {
+const PostsList = (props) => {
   const dispatch = useDispatch();
-
+  const posts = useSelector((state) => state.posts);
   const getPosts = async () => {
     setTimeout(async () => {
       const response = await axios
@@ -20,12 +20,14 @@ const PostsList = () => {
   };
 
   useEffect(() => {
-    getPosts();
+    if (!posts) {
+      getPosts();
+    }
   }, []);
 
   return (
     <div>
-      <PostsComponent />
+      <PostsComponent {...props} />
     </div>
   );
 };

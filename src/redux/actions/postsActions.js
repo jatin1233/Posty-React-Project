@@ -25,3 +25,10 @@ export const showPost = (id) => {
     payload: id,
   };
 };
+
+export const editPost = (input) => {
+  return {
+    type: "EDIT_POST",
+    payload: input,
+  };
+};
